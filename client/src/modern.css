@@ -1,0 +1,137 @@
+/* Word cloud modern style */
+.word-cloud {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px 0 6px 0;
+  background: rgba(255,255,255,0.5);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(80,80,160,0.07);
+  margin-bottom: 16px;
+  max-width: 300px;
+  min-width: 200px;
+  min-height: 80px;
+  max-height: 180px;
+  width: 100%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  font-size: 12px;
+}
+.modern-bg {
+  min-height: 100vh;
+  background: url('../assets/bg-image-front-page.png') center/cover no-repeat fixed;
+  position: relative;
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.glass-landing {
+  background: rgba(30, 60, 114, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 24px;
+  padding: 56px 40px 48px 40px;
+  margin-top: 5vh;
+  min-width: 340px;
+  max-width: 90vw;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Gradient heading text */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap');
+.floating-text {
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  background: linear-gradient(90deg, #e4cfff 0%, #e2f1ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 6px 32px rgba(30,60,114,0.22);
+  animation: floatY 3.5s ease-in-out infinite alternate;
+  margin-bottom: 0.2em;
+  line-height: 1.1;
+}
+@keyframes floatY {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-18px) scale(1.04); }
+}
+.screen {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.7s;
+}
+.landing {
+  background: rgba(30,60,114,0.7);
+  border-radius: 24px;
+  padding: 48px 32px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.guild-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  letter-spacing: 2px;
+}
+.interview-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1em;
+}
+.subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 2em;
+  color: #e0e0e0;
+}
+.landing-actions {
+  display: flex;
+  gap: 1.5em;
+  justify-content: center;
+}
+.primary, .secondary {
+  font-size: 1.1rem;
+  padding: 0.7em 2.2em;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 1em;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.primary {
+  background: #61dafb;
+  color: #1e3c72;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(97,218,251,0.15);
+}
+.primary:hover {
+  background: #4fc3f7;
+}
+.secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #61dafb;
+  font-weight: 500;
+}
+.secondary:hover {
+  background: #61dafb;
+  color: #1e3c72;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
