@@ -5,7 +5,6 @@ import './modern.css';
 import { WordCloudViz, Histogram } from './Visualizations';
 import PHChoroplethMap from './PHChoroplethMap';
 import TextField from '@mui/material/TextField';
-import { saveDataToFile } from './offlineUtils';
 import stimmieImage from './stimmie.png';
 import PHProvinceMap from './PHProvinceMap';
 
@@ -22,9 +21,6 @@ const committees = [
 ];
 
 function App() {
-  // Intro slide 0: Welcome
-  const stimmieLogo = null; // Replace with logo import if available
-
   // State for the current step
   const [step, setStep] = useState(0);
   // State for the form fields
@@ -98,7 +94,7 @@ function App() {
   const handleSubmit = async () => {
     setError('');
     try {
-      const res = await fetch('/api/interviews', {
+      const res = await fetch('https://dsg-reporting.onrender.com/api/interviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -114,7 +110,7 @@ function App() {
   // Fetch all interview data from the API
   const fetchAllData = async () => {
     try {
-      const res = await fetch('/api/interviews');
+      const res = await fetch('https://dsg-reporting.onrender.com/api/interviews');
       if (!res.ok) throw new Error('Failed to fetch data');
       const data = await res.json();
       setAllData(Array.isArray(data) ? data : []);
