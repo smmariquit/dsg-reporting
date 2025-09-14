@@ -249,9 +249,6 @@ function App() {
                 <a href="https://codedex.io/" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
                   🎮 Codedex - Gamified Coding Platform
                 </a><br/>
-                <a href="https://dataengineering.ph/datacamp-donates.html" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
-                  🎓 DEP x DataCamp Scholarship
-                </a><br/>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScmsuaLkicvwgoSY7NwTuSJqHYoX_ii1Y4S0lEEnfk0ZUR1ug/viewform?edit_requested=true" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
                   🎯 DTI x Google Career Certificates Scholarship
                 </a><br/>
