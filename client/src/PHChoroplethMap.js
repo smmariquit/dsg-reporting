@@ -14,11 +14,11 @@ function getCounts(data) {
 }
 
 const provinceColors = [
-  '#e0e7ff', '#b4c6fc', '#7fa6f8', '#4b7bec', '#274690', '#1b2a49'
+  '#e0e7ef', '#c1d1e0', '#a2bbd1', '#83a5c2', '#648fb3', '#4579a4'
 ];
 
 function getColor(count, max) {
-  if (!count) return '#f3f4f6';
+  if (!count) return '#e0e7ef';
   const idx = Math.floor((count / max) * (provinceColors.length - 1));
   return provinceColors[idx];
 }
@@ -44,8 +44,8 @@ export default function PHChoroplethMap({ data, highlight }) {
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: 360, minWidth: 280, margin: '0 auto', padding: 0, overflow: 'visible', position: 'relative' }}>
-      <ComposableMap projection="geoMercator" projectionConfig={{ scale: 2200, center: [122, 12.5] }} width={340} height={180} style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+    <div style={{ width: '100%', maxWidth: 500, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+      <ComposableMap projection="geoMercator" projectionConfig={{ scale: 2200, center: [122.5, 12.5] }} width={480} height={520} style={{ background: 'transparent', width: '100%', height: 'auto' }}>
         <Geographies geography={phTopo}>
           {({ geographies }) =>
             geographies.map(geo => {
@@ -56,13 +56,16 @@ export default function PHChoroplethMap({ data, highlight }) {
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill={isHighlight ? '#fbbf24' : getColor(count, max)}
-                  stroke="#fff"
-                  strokeWidth={isHighlight ? 2 : 0.5}
+                  fill={isHighlight ? '#61dafb' : getColor(count, max)}
+                  stroke="#3fa7ff"
+                  strokeWidth={isHighlight ? 2 : 0.7}
                   style={{
-                    default: { outline: 'none' },
-                    hover: { outline: 'none', filter: 'brightness(1.1)' },
-                    pressed: { outline: 'none' }
+                    default: { 
+                      outline: 'none',
+                      filter: isHighlight ? 'drop-shadow(0 0 8px #61dafb)' : 'none'
+                    },
+                    hover: { outline: 'none', fill: '#a259ff' },
+                    pressed: { outline: 'none', fill: '#3fa7ff' }
                   }}
                   onMouseEnter={(e) => handleMouseEnter(e, prov, count)}
                   onMouseLeave={handleMouseLeave}

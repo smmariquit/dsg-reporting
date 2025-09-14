@@ -284,7 +284,7 @@ function App() {
               <div style={{ fontSize: 16, lineHeight: 1.6, color: '#f0f0f0' }}>
                 ✨ Get to know you more<br/>
                 ✨ Get to know me more<br/>
-                ✨ Get to know the organization more!
+                ✨ Get to know the organization more
               </div>
             </div>
 
@@ -889,13 +889,12 @@ function App() {
               padding: 20,
               display: 'flex',
               flexDirection: 'column',
+              height: '500px',
               alignItems: 'center'
             }}>
               <h4 style={{ margin: '0 0 16px', color: '#222', fontFamily: 'Poppins, sans-serif' }}>DSG Members' Hometowns</h4>
-              <div style={{ width: '100%', height: 300, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div style={{ maxWidth: 280, maxHeight: 280 }}>
+              <div style={{ width: '100%', maxWidth: 350}}>
                   <PHChoroplethMap data={allData.map(d => d.hometown).filter(Boolean)} highlight={form.hometown} />
-                </div>
               </div>
             </div>
             {/* Right column - Summary */}
@@ -1415,7 +1414,7 @@ function App() {
                 </div>
                 <div>
                   <h5 style={{ fontWeight: 500, margin: '0 0 16px', color: '#222', textAlign: 'center' }}>Geographic Summary</h5>
-                  <div style={{ height: 450, padding: 16, background: 'rgba(240,240,255,0.5)', borderRadius: 8, fontSize: 16 }}>
+                  <div style={{ height: 350, padding: 16, background: 'rgba(240,240,255,0.5)', borderRadius: 8, fontSize: 16 }}>
                     <div style={{ marginBottom: 20 }}>
                       <div style={{ fontWeight: 'bold', color: '#333', marginBottom: 8, fontSize: 18 }}>Your Location Info:</div>
                       <div style={{ color: '#555', fontSize: 15, lineHeight: 1.6 }}>
