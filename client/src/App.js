@@ -204,7 +204,63 @@ function App() {
           <div style={{ display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center', marginTop: 8 }}>
             <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(0.5)}>Start</button>
             <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(99)}>Summary</button>
+            <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(100)}>Resources Kit</button>
           </div>
+        </div>
+      )}
+
+      {step === 100 && (
+        <div className="screen glass-landing" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <h1 className="heading">Resources Kit</h1>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.1)', 
+            borderRadius: 12, 
+            padding: '24px 32px', 
+            marginBottom: 32,
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            textAlign: 'center'
+          }}>
+            <div style={{ color: '#f0f0f0', fontSize: 16, lineHeight: 1.6 }}>
+                <a href="https://www.facebook.com/DataEngineeringPilipinas" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  📘 Data Engineering Pilipinas on Facebook
+                </a>
+                {' and '}
+                <a href="https://discord.gg/PHk3DwBAHy" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  Discord
+                </a><br/>
+                <a href="https://www.kaggle.com/" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🏆 Kaggle - Data Science Competitions Platform
+                </a><br/>
+                <a href="https://docs.google.com/document/d/1cJya3Zb2ck9vkxIKc1LQjJomQS_LFtBOABlzHrb7Z5s/edit?tab=t.udvwiwivkx5w" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  📖 My Hackathon Guide
+                </a><br/>
+                <a href="https://pizza-and-friends.webflow.io" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🍕 My Tech Community
+                </a><br/>
+                <a href="https://www.datacamp.com/cheat-sheets" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  📋 DataCamp Cheat Sheets
+                </a><br/>
+                <a href="https://roadmap.sh/" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🗺️ Data Science Learning Paths
+                </a><br/><a href="https://dataengineering.ph/datacamp-donates.html" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🎓 DEP x DataCamp Scholarship
+                </a><br/>
+                <a href="https://codedex.io/" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🎮 Codedex - Gamified Coding Platform
+                </a><br/>
+                <a href="https://dataengineering.ph/datacamp-donates.html" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🎓 DEP x DataCamp Scholarship
+                </a><br/>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScmsuaLkicvwgoSY7NwTuSJqHYoX_ii1Y4S0lEEnfk0ZUR1ug/viewform?edit_requested=true" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  🎯 DTI x Google Career Certificates Scholarship
+                </a><br/>
+                <a href="https://airtable.com/appu4Q0k1dfXktszQ/shrIbREU3GMqCceMF?ck_subscriber_id=3311259222&utm_source=convertkit&utm_medium=email&utm_campaign=Job%20Hunting%20Feels%20Impossible?%20You%E2%80%99re%20Not%20Alone%20%F0%9F%91%80%20-%2018899415" target="_blank" rel="noopener noreferrer" style={{ color: '#87CEEB', textDecoration: 'none' }}>
+                  📅 Kuya Dev's PH Tech Events Calendar
+                </a><br/>
+              </div>
+          </div>
+            <button className="secondary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(0)}>Back to Home</button>
         </div>
       )}
 
@@ -1418,7 +1474,7 @@ function App() {
               </div>
             </div>
           <div className="nav-row" style={{ display: 'flex', gap: 24, justifyContent: 'center', marginTop: 32 }}>
-            <button className="secondary" onClick={() => setStep(18)} style={{ minWidth: 120 }}>Back</button>
+            <button className="secondary" onClick={() => setStep(0)} style={{ minWidth: 120 }}>Back</button>
           </div>
         </div>
       )}
