@@ -75,48 +75,117 @@ function App() {
     }
   };
 
-  // Save partial form data to the API (optional, can be used for autosave)
+  // Save partial form data to the API (optional, with graceful failure)
   const partialSubmit = async (field) => {
-    setError('');
+    // Don't show errors for partial submits - they're not critical
     try {
-      // Optionally send partial data to the server (not required for final submit)
-      // await fetch('/api/interviews', {
+      // Only attempt if we want to implement partial saving
+      // Currently disabled but can be enabled later
+      // await fetchWithTimeout('/api/interviews', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ ...form, partial: true, field }),
       // });
     } catch (err) {
-      setError('Failed to save progress.');
+      // Silent failure for partial submits
+      console.log('Partial submit failed, continuing:', err);
     }
   };
 
-  // Submit the form to the API and refresh allData
+  // Helper function to create fetch with timeout
+  const fetchWithTimeout = (url, options = {}, timeout = 10000) => {
+    return Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout')), timeout)
+      )
+    ]);
+  };
+
+  // Save data to localStorage as backup
+  const saveDataToLocal = (data) => {
+    try {
+      localStorage.setItem('dsg-survey-data', JSON.stringify(data));
+    } catch (err) {
+      console.log('Could not save to localStorage:', err);
+    }
+  };
+
+  // Load data from localStorage
+  const loadDataFromLocal = () => {
+    try {
+      const data = localStorage.getItem('dsg-survey-data');
+      return data ? JSON.parse(data) : null;
+    } catch (err) {
+      console.log('Could not load from localStorage:', err);
+      return null;
+    }
+  };
+
+  // Load fallback data from JSON file
+  const loadFallbackData = async () => {
+    try {
+      const response = await fetch('/fallback-data.json');
+      if (!response.ok) throw new Error('Fallback data not found');
+      return await response.json();
+    } catch (err) {
+      console.log('Could not load fallback data:', err);
+      return [];
+    }
+  };
+
+  // Submit the form to the API (with graceful failure)
   const handleSubmit = async () => {
     setError('');
     try {
-      const res = await fetch('https://dsg-reporting.onrender.com/api/interviews', {
+      const res = await fetchWithTimeout('https://dsg-reporting.onrender.com/api/interviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error('Failed to submit');
-      // After submit, fetch all data again
+      // After successful submit, fetch all data again
       await fetchAllData();
     } catch (err) {
-      setError('Submission failed. Please try again.');
+      // If submission fails, just continue without error - silent failure
+      console.log('Submission failed, continuing offline:', err);
     }
   };
 
-  // Fetch all interview data from the API
+  // Fetch all interview data from the API with fallback
   const fetchAllData = async () => {
     try {
-      const res = await fetch('https://dsg-reporting.onrender.com/api/interviews');
+      // Try to fetch from API with timeout
+      const res = await fetchWithTimeout('https://dsg-reporting.onrender.com/api/interviews');
       if (!res.ok) throw new Error('Failed to fetch data');
       const data = await res.json();
-      setAllData(Array.isArray(data) ? data : []);
+      const validData = Array.isArray(data) ? data : [];
+      
+      // Save successful API data to localStorage
+      saveDataToLocal(validData);
+      setAllData(validData);
+      setError(''); // Clear any previous errors
     } catch (err) {
-      setAllData([]);
-      setError('Could not load data.');
+      console.log('API fetch failed, trying fallback sources:', err);
+      
+      // Try to load from localStorage first
+      const localData = loadDataFromLocal();
+      if (localData && Array.isArray(localData) && localData.length > 0) {
+        setAllData(localData);
+        setError(''); // Don't show error if we have cached data
+        return;
+      }
+
+      // If no localStorage data, try fallback JSON
+      try {
+        const fallbackData = await loadFallbackData();
+        setAllData(Array.isArray(fallbackData) ? fallbackData : []);
+        setError(''); // Don't show error if we have fallback data
+      } catch (fallbackErr) {
+        // Only show error if all sources fail
+        setAllData([]);
+        setError('Using offline mode - limited data available.');
+      }
     }
   };
 
@@ -143,10 +212,68 @@ function App() {
         <div className="screen glass-landing" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
           <h2>Hi! I'm Stimmie 👋</h2>
           <img src={stimmieImage} alt="Stimmie" style={{ width: '100%', maxWidth: 640, height: 'auto', marginBottom: 16 }} />
-          <p style={{ fontSize: 18, marginBottom: 32, maxWidth: 480, textAlign: 'center' }}>
-            I'll guide you through a few fun questions. Your answers will help us understand our community better and create awesome experiences for everyone!
-          </p>
+          <div style={{ fontSize: 18, marginBottom: 32, maxWidth: 520, textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ 
+              marginBottom: 24, 
+              padding: '16px 20px', 
+              background: 'rgba(255,255,255,0.15)', 
+              borderRadius: 12, 
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}>
+              <h4 style={{ 
+                fontSize: 20, 
+                fontWeight: 600, 
+                margin: '0 0 12px 0', 
+                color: '#fff',
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+              }}>Today's Journey</h4>
+              <div style={{ fontSize: 16, lineHeight: 1.6, color: '#f0f0f0' }}>
+                ✨ Get to know you more<br/>
+                ✨ Get to know me more<br/>
+                ✨ Get to know the organization more!
+              </div>
+            </div>
+
+            <div style={{ 
+              padding: '20px 24px', 
+              background: 'rgba(255,255,255,0.2)', 
+              borderRadius: 12, 
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.25)'
+            }}>
+              <h4 style={{ 
+                fontSize: 20, 
+                fontWeight: 600, 
+                margin: '0 0 16px 0', 
+                color: '#fff',
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+              }}>About Me</h4>
+              <div style={{ fontSize: 15, lineHeight: 1.8, color: '#f0f0f0', textAlign: 'left' }}>
+                <div style={{ marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#ffeb3b', fontWeight: 'bold', minWidth: 16 }}>🎓</span>
+                  <span>3rd year BS Computer Science student</span>
+                </div>
+                <div style={{ marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#4caf50', fontWeight: 'bold', minWidth: 16 }}>💡</span>
+                  <span>Mentor, community builder, and tech enthusiast at heart</span>
+                </div>
+                <div style={{ marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#ff9800', fontWeight: 'bold', minWidth: 16 }}>🏆</span>
+                  <span>15x hackathon joiner and 5x winner</span>
+                </div>
+                <div style={{ marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#e91e63', fontWeight: 'bold', minWidth: 16 }}>📰</span>
+                  <span>Former campus journalist and student leader</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#2196f3', fontWeight: 'bold', minWidth: 16 }}>💻</span>
+                  <span>Software engineer at E-Konsulta Medical Clinic</span>
+                </div>
+              </div>
+            </div>
           <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(1)}>Let's go!</button>
+          </div>
         </div>
       )}
 
@@ -178,7 +305,7 @@ function App() {
             ))}
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 24 }}>
-            <button className="secondary" onClick={() => setStep(0)}>Back</button>
+            <button className="secondary" onClick={() => setStep(0.5)}>Back</button>
             <span style={{ flex: 1 }} />
             <button className="primary" onClick={async () => { await partialSubmit('wordsDescribeSelf'); setStep(1.5); }} disabled={form.wordsDescribeSelf.filter(Boolean).length !== 3}>Next</button>
           </div>

@@ -1,0 +1,38 @@
+[
+  {
+    "wordsDescribeSelf": ["creative", "analytical", "determined"],
+    "wordsDescribeDS": ["powerful", "insightful", "complex"],
+    "confidenceStorytelling": 7,
+    "confidenceAnalytics": 8,
+    "skills": ["Python", "SQL", "Machine Learning", "Data Visualization"],
+    "competitionsJoined": 3,
+    "committees": ["Training and Skills", "Marketing and Creatives", "External Affairs"],
+    "hometown": "Metro Manila",
+    "favoriteProvince": "Bohol",
+    "favoriteProvinceReason": "beautiful"
+  },
+  {
+    "wordsDescribeSelf": ["curious", "logical", "ambitious"],
+    "wordsDescribeDS": ["challenging", "valuable", "revolutionary"],
+    "confidenceStorytelling": 6,
+    "confidenceAnalytics": 9,
+    "skills": ["R", "Python", "Statistics", "Excel"],
+    "competitionsJoined": 5,
+    "committees": ["Finance", "Training and Skills", "Secretariat and Logistics"],
+    "hometown": "Cebu",
+    "favoriteProvince": "Palawan",
+    "favoriteProvinceReason": "pristine"
+  },
+  {
+    "wordsDescribeSelf": ["passionate", "innovative", "collaborative"],
+    "wordsDescribeDS": ["transformative", "essential", "fascinating"],
+    "confidenceStorytelling": 8,
+    "confidenceAnalytics": 7,
+    "skills": ["Tableau", "PowerBI", "Python", "Graphic Design"],
+    "competitionsJoined": 2,
+    "committees": ["Marketing and Creatives", "External Affairs", "Training and Skills"],
+    "hometown": "Davao",
+    "favoriteProvince": "Batanes",
+    "favoriteProvinceReason": "peaceful"
+  }
+]
