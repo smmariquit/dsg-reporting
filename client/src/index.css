@@ -1,10 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Montserrat:wght@600;700&family=Poppins:wght@400;600;700&display=swap');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Press Start 2P',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url('../public/bg-image-front-page.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #1a1a1a;
+}
+
+.heading {
+  font-family: 'Press Start 2P', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 3rem;
+  color: hsl(276, 100%, 63%);
+  margin-bottom: 0.5em;
+  text-shadow: 0 0 10px hsl(276, 69%, 13%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Press Start 2P', 'Montserrat', 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: hsl(276, 100%, 63%);
+  margin-bottom: 0.5em;
+}
+
+p {
+  font-family: 'Montserrat', 'Poppins', sans-serif;
+  font-weight: 150;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  margin-bottom: 0.5em;
+}
+
+.glass-landing {
+  background: rgba(255, 255, 255, 0.30);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 rgba(35,41,70,0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 22px;
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  padding: 40px 32px;
+  margin: 40px auto;
+  max-width: 720px;
+  transition: box-shadow 0.2s;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.glass-landing:hover {
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.22), 0 2px 12px 0 rgba(35,41,70,0.10);
+}
+
+button.primary, button.secondary {
+  font-family: 'Montserrat', 'Poppins', sans-serif;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+button.primary {
+  background: linear-gradient(90deg, #a748ff 60%, #5f6c7b 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px 0 rgba(35,41,70,0.10);
+}
+
+button.primary:hover {
+  background: linear-gradient(90deg, #232946 80%, #3e4972 100%);
+  color: #fff;
+}
+
+button.secondary {
+  background: #fff;
+  color: #232946;
+  border: 1.5px solid #232946;
+}
+
+button.secondary:hover {
+  background: #f4f6fb;
+  color: #232946;
 }
 
 code {

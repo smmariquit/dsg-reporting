@@ -6,6 +6,7 @@ import { WordCloudViz, Histogram } from './Visualizations';
 import PHChoroplethMap from './PHChoroplethMap';
 import TextField from '@mui/material/TextField';
 import { saveDataToFile } from './offlineUtils';
+import stimmieImage from './stimmie.png';
 import PHProvinceMap from './PHProvinceMap';
 
 
@@ -16,10 +17,250 @@ const committees = [
   'Marketing and Creatives',
   'Finance',
   'Secretariat and Logistics',
+  'External Affairs',
+  'Training and Skills',
+];
+
+function App() {
+  // Intro slide 0: Welcome
+  const stimmieLogo = null; // Replace with logo import if available
+
+  // State for the current step
+  const [step, setStep] = useState(0);
+  // State for the form fields
+  const [form, setForm] = useState({
+    wordsDescribeSelf: ['', '', ''],
+    wordsDescribeDS: ['', '', ''],
+    confidenceStorytelling: '',
+    confidenceAnalytics: '',
+    skills: [],
+    competitionsJoined: '',
+    committees: ['', '', ''],
+    hometown: '',
+    favoriteProvince: '',
+    favoriteProvinceReason: '',
+  });
+  // State for all data (simulate as empty array for now)
+  const [allData, setAllData] = useState([]);
+  // Error state
+  const [error, setError] = useState('');
+
+  // Handler for input/checkbox changes
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name === 'skills') {
+      setForm(f => {
+        let newSkills = f.skills.slice();
+        if (checked) {
+          newSkills.push(value);
+        } else {
+          newSkills = newSkills.filter(s => s !== value);
+        }
+        return { ...f, skills: newSkills };
+      });
+    } else if (name.startsWith('wordsDescribeSelf-')) {
+      const idx = parseInt(name.split('-')[1], 10);
+      setForm(f => {
+        const newWords = [...f.wordsDescribeSelf];
+        newWords[idx] = value;
+        return { ...f, wordsDescribeSelf: newWords };
+      });
+    } else if (name.startsWith('wordsDescribeDS-')) {
+      const idx = parseInt(name.split('-')[1], 10);
+      setForm(f => {
+        const newWords = [...f.wordsDescribeDS];
+        newWords[idx] = value;
+        return { ...f, wordsDescribeDS: newWords };
+      });
+    } else if (name.startsWith('committee-rank-')) {
+      // handled inline in JSX
+    } else {
+      setForm(f => ({ ...f, [name]: type === 'number' ? Number(value) : value }));
+    }
+  };
+
+  // Save partial form data to the API (optional, can be used for autosave)
+  const partialSubmit = async (field) => {
+    setError('');
+    try {
+      // Optionally send partial data to the server (not required for final submit)
+      // await fetch('/api/interviews', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ ...form, partial: true, field }),
+      // });
+    } catch (err) {
+      setError('Failed to save progress.');
+    }
+  };
+
+  // Submit the form to the API and refresh allData
+  const handleSubmit = async () => {
+    setError('');
+    try {
+      const res = await fetch('/api/interviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error('Failed to submit');
+      // After submit, fetch all data again
+      await fetchAllData();
+    } catch (err) {
+      setError('Submission failed. Please try again.');
+    }
+  };
+
+  // Fetch all interview data from the API
+  const fetchAllData = async () => {
+    try {
+      const res = await fetch('/api/interviews');
+      if (!res.ok) throw new Error('Failed to fetch data');
+      const data = await res.json();
+      setAllData(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setAllData([]);
+      setError('Could not load data.');
+    }
+  };
+
+  // Load all data on mount
+  useEffect(() => {
+    fetchAllData();
+    // eslint-disable-next-line
+  }, []);
+
+  return (
+    <>
+      {step === 0 && (
+        <div className="screen glass-landing" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <h1 className="heading">Welcome to Stimmie!</h1>
+          <p style={{ fontSize: 20, marginBottom: 32 }}>A quick survey to get to know you and your data science journey.</p>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center', marginTop: 8 }}>
+            <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(0.5)}>Start</button>
+            <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(99)}>Summary</button>
+          </div>
+        </div>
+      )}
+
+      {step === 0.5 && (
+        <div className="screen glass-landing" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <h2>Hi! I'm Stimmie 👋</h2>
+          <img src={stimmieImage} alt="Stimmie" style={{ width: 640, marginBottom: 16 }} />
+          <p style={{ fontSize: 18, marginBottom: 32, maxWidth: 480, textAlign: 'center' }}>
+            I'll guide you through a few fun questions. Your answers will help us understand our community better and create awesome experiences for everyone!
+          </p>
+          <button className="primary" style={{ fontSize: 18, padding: '10px 32px' }} onClick={() => setStep(1)}>Let's go!</button>
+        </div>
+      )}
+
+  {/* 3 words to describe yourself */}
+  {step === 1 && (
+        <div className="screen glass-landing">
+          <h3>What 3 words best describe you?</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center', margin: '24px 0' }}>
+            {[0,1,2].map(i => (
+              <TextField
+                key={i}
+                name={`wordsDescribeSelf-${i}`}
+                value={form.wordsDescribeSelf[i] || ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setForm(f => {
+                    const newWords = [...f.wordsDescribeSelf];
+                    newWords[i] = value;
+                    return { ...f, wordsDescribeSelf: newWords };
+                  });
+                }}
+                label={`Word ${i+1}`}
+                variant="outlined"
+                size="small"
+                sx={{ background: 'rgba(255,255,255,0.7)', borderRadius: 2, fontFamily: 'Poppins, sans-serif', minWidth: 180 }}
+                inputProps={{ maxLength: 24 }}
+              />
+            ))}
+          </div>
+          <div className="nav-row" style={{ display: 'flex', gap: 16 }}>
+            <span style={{ flex: 1 }} />
+            <button className="primary" onClick={async () => { await partialSubmit('wordsDescribeSelf'); setStep(1.5); }} disabled={form.wordsDescribeSelf.filter(Boolean).length !== 3}>Next</button>
+          </div>
+        </div>
+      )}
+            {step === 1.5 && (
+        <div className="screen glass-landing">
+          <h3>Summary</h3>
+          <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
+            Awesome! Your 3 words are <b>{form.wordsDescribeSelf[0]}</b>, <b>{form.wordsDescribeSelf[1]}</b>, and <b>{form.wordsDescribeSelf[2]}</b>.<br/>
+            <div style={{ margin: '18px 0 0 0' }}>
+              Here's a word cloud of what DSG members describe themselves as:
+              <WordCloudViz
+                words={allData.flatMap(d => d.wordsDescribeSelf || [])}
+                fontFamily="'Poppins', 'Montserrat', 'Press Start 2P', sans-serif"
+                className="word-cloud"
+                cloudStyle={{
+                  background: 'linear-gradient(135deg, #e4cfff 0%, #e2f1ff 100%)',
+                  borderRadius: '24px',
+                  boxShadow: '0 4px 24px rgba(80,80,160,0.13)',
+                  padding: '18px 8px',
+                  minHeight: 100,
+                  maxHeight: 200,
+                  margin: '0 auto',
+                  width: '100%',
+                  color: '#4b3fa7',
+                  fontWeight: 700,
+                  letterSpacing: '1.5px',
+                  textShadow: '0 2px 8px rgba(80,80,160,0.10)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap',
+                }}
+              />
+            </div>
+          </div>
+          <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
+            <button className="secondary" onClick={() => setStep(1)}>Back</button>
+            <span style={{ flex: 1 }} />
+            <button className="primary" onClick={() => setStep(2)}>Next</button>
+          </div>
+        </div>
+      )}
+
+  {step === 2 && (
+        <div className="screen glass-landing">
+          <h3>What 3 words best describe Data Science?</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center', margin: '24px 0' }}>
+            {[0,1,2].map(i => (
+              <TextField
+                key={i}
+                name={`wordsDescribeDS-${i}`}
+                value={form.wordsDescribeDS[i] || ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setForm(f => {
+                    const newWords = [...f.wordsDescribeDS];
+                    newWords[i] = value;
+                    return { ...f, wordsDescribeDS: newWords };
+                  });
+                }}
+                label={`Word ${i+1}`}
+                variant="outlined"
+                size="small"
+                sx={{ background: 'rgba(255,255,255,0.7)', borderRadius: 2, fontFamily: 'Poppins, sans-serif', minWidth: 180 }}
+                inputProps={{ maxLength: 24 }}
+              />
+            ))}
+          </div>
+          <div className="nav-row" style={{ display: 'flex', gap: 16 }}>
+            <button className="secondary" onClick={() => setStep(1)}>Back</button>
+            <span style={{ flex: 1 }} />
+            <button className="primary" onClick={async () => { await partialSubmit('wordsDescribeDS'); setStep(3); }} disabled={form.wordsDescribeDS.filter(Boolean).length !== 3}>Next</button>
+          </div>
+        </div>
+      )}
 
 
-      {/* 102. Summary for 3 words to describe Data Science */}
-      {step === 102 && (
+      {step === 3 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
@@ -32,12 +273,12 @@ const committees = [
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
             <button className="secondary" onClick={() => setStep(2)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(3)}>Next</button>
+            <button className="primary" onClick={() => setStep(4)}>Next</button>
           </div>
         </div>
       )}
-      {/* 3. Confidence in writing/storytelling skills (10 buttons, 2 rows of 5) */}
-      {step === 3 && (
+  {/* Confidence in writing/storytelling skills (10 buttons, 2 rows of 5) */}
+  {step === 4 && (
         <div className="screen glass-landing">
           <h3>How confident are you in your writing/storytelling skills?</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, justifyContent: 'center', alignItems: 'center', margin: '24px 0' }}>
@@ -63,15 +304,15 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16 }}>
-            <button className="secondary" onClick={() => setStep(2)}>Back</button>
+            <button className="secondary" onClick={() => setStep(3)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={async () => { await partialSubmit('confidenceStorytelling'); setStep(103); }} disabled={!form.confidenceStorytelling}>Next</button>
+            <button className="primary" onClick={async () => { await partialSubmit('confidenceStorytelling'); setStep(5); }} disabled={!form.confidenceStorytelling}>Next</button>
           </div>
         </div>
       )}
 
-      {/* 103. Summary for confidence in storytelling */}
-      {step === 103 && (
+  {/* Summary for confidence in storytelling */}
+  {step === 5 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
@@ -82,14 +323,14 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(3)}>Back</button>
+            <button className="secondary" onClick={() => setStep(4)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(4)}>Next</button>
+            <button className="primary" onClick={() => setStep(6)}>Next</button>
           </div>
         </div>
       )}
-      {/* 4. Confidence in analytical skills (10 buttons, 2 rows of 5) */}
-      {step === 4 && (
+  {/* Confidence in analytical skills (10 buttons, 2 rows of 5) */}
+  {step === 6 && (
         <div className="screen glass-landing">
           <h3>How confident are you in your analytical skills?</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, justifyContent: 'center', alignItems: 'center', margin: '24px 0' }}>
@@ -115,15 +356,15 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16 }}>
-            <button className="secondary" onClick={() => setStep(103)}>Back</button>
+            <button className="secondary" onClick={() => setStep(5)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={async () => { await partialSubmit('confidenceAnalytics'); setStep(104); }} disabled={!form.confidenceAnalytics}>Next</button>
+            <button className="primary" onClick={async () => { await partialSubmit('confidenceAnalytics'); setStep(7); }} disabled={!form.confidenceAnalytics}>Next</button>
           </div>
         </div>
       )}
 
-      {/* 104. Summary for confidence in analytics */}
-      {step === 104 && (
+  {/* Summary for confidence in analytics */}
+  {step === 7 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
@@ -134,14 +375,14 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(4)}>Back</button>
+            <button className="secondary" onClick={() => setStep(6)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(5)}>Next</button>
+            <button className="primary" onClick={() => setStep(8)}>Next</button>
           </div>
         </div>
       )}
-      {/* 5. Skills */}
-      {step === 5 && (
+  {/* Skills */}
+  {step === 8 && (
         <div className="screen glass-landing">
           <h3>Select your coding/tech and graphic design skills</h3>
           <div className="skills-list">
@@ -152,14 +393,14 @@ const committees = [
             ))}
           </div>
           <div className="nav-row">
-            <button className="secondary" onClick={() => setStep(104)}>Back</button>
-            <button className="primary" onClick={async () => { await partialSubmit('skills'); setStep(105); }} disabled={form.skills.length === 0}>Next</button>
+            <button className="secondary" onClick={() => setStep(7)}>Back</button>
+            <button className="primary" onClick={async () => { await partialSubmit('skills'); setStep(9); }} disabled={form.skills.length === 0}>Next</button>
           </div>
         </div>
       )}
 
-      {/* 105. Summary for skills */}
-      {step === 105 && (
+  {/* Summary for skills */}
+  {step === 9 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
@@ -170,26 +411,26 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(5)}>Back</button>
+            <button className="secondary" onClick={() => setStep(8)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(6)}>Next</button>
+            <button className="primary" onClick={() => setStep(10)}>Next</button>
           </div>
         </div>
       )}
-      {/* 6. Competitions */}
-      {step === 6 && (
+  {/* Competitions */}
+  {step === 10 && (
         <div className="screen glass-landing">
           <h3>How many data visualization, business case, or hackathon competitions have you joined?</h3>
           <input type="number" name="competitionsJoined" value={form.competitionsJoined} onChange={handleChange} min={0} className="modern-input" />
           <div className="nav-row">
-            <button className="secondary" onClick={() => setStep(105)}>Back</button>
-            <button className="primary" onClick={async () => { await partialSubmit('competitionsJoined'); setStep(106); }} disabled={form.competitionsJoined === ''}>Next</button>
+            <button className="secondary" onClick={() => setStep(9)}>Back</button>
+            <button className="primary" onClick={async () => { await partialSubmit('competitionsJoined'); setStep(11); }} disabled={form.competitionsJoined === ''}>Next</button>
           </div>
         </div>
       )}
 
-      {/* 106. Summary for competitions */}
-      {step === 106 && (
+  {/* Summary for competitions */}
+  {step === 11 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, background: 'rgba(255,255,255,0.6)', borderRadius: 12, padding: 16 }}>
@@ -200,14 +441,14 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(6)}>Back</button>
+            <button className="secondary" onClick={() => setStep(10)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(7)}>Next</button>
+            <button className="primary" onClick={() => setStep(12)}>Next</button>
           </div>
         </div>
       )}
-      {/* 7. Committees (ranked selection, MUI Select) */}
-      {step === 7 && (
+  {/* Committees (ranked selection, MUI Select) */}
+  {step === 12 && (
         <div className="screen glass-landing">
           <h3>Rank your top 3 committees you want to join</h3>
           <div className="committees-list" style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 400, margin: '0 auto' }}>
@@ -244,14 +485,14 @@ const committees = [
             ))}
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16 }}>
-            <button className="secondary" onClick={() => setStep(106)}>Back</button>
+            <button className="secondary" onClick={() => setStep(11)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={async () => { await partialSubmit('committees'); setStep(8); }} disabled={form.committees.length !== 3 || form.committees.includes('')}>Next</button>
+            <button className="primary" onClick={async () => { await partialSubmit('committees'); setStep(13); }} disabled={form.committees.length !== 3 || form.committees.includes('')}>Next</button>
           </div>
         </div>
       )}
-      {/* 8. Hometown (map) */}
-      {step === 8 && (
+  {/* Hometown (map) */}
+  {step === 13 && (
         <div className="screen glass-landing">
           <h3>Select your hometown province</h3>
           <PHProvinceMap
@@ -261,14 +502,14 @@ const committees = [
             }}
           />
           <div className="nav-row">
-            <button className="secondary" onClick={() => setStep(7)}>Back</button>
-            <button className="primary" onClick={async () => { await partialSubmit('hometown'); setStep(108); }} disabled={!form.hometown}>Next</button>
+            <button className="secondary" onClick={() => setStep(12)}>Back</button>
+            <button className="primary" onClick={async () => { await partialSubmit('hometown'); setStep(14); }} disabled={!form.hometown}>Next</button>
           </div>
         </div>
       )}
 
-      {/* 108. Hometown choropleth summary */}
-      {step === 108 && (
+  {/* Hometown choropleth summary */}
+  {step === 14 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div className="glass-landing" style={{ margin: '24px auto 0 auto', maxWidth: 600, textAlign: 'center', fontFamily: 'Poppins, sans-serif', fontSize: 17, borderRadius: 12, padding: 16 }}>
@@ -279,14 +520,14 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(8)}>Back</button>
+            <button className="secondary" onClick={() => setStep(13)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(9)}>Next</button>
+            <button className="primary" onClick={() => setStep(15)}>Next</button>
           </div>
         </div>
       )}
-      {/* 109. Favorite province choropleth and word cloud summary */}
-      {step === 109 && (
+  {/* Favorite province choropleth and word cloud summary */}
+  {step === 15 && (
         <div className="screen glass-landing">
           <h3>Summary</h3>
           <div style={{ display: 'flex', flexDirection: 'row', gap: 32, alignItems: 'flex-start', justifyContent: 'center', margin: '24px auto 0 auto', maxWidth: 900 }}>
@@ -306,14 +547,14 @@ const committees = [
             </div>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 24, marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(9)}>Back</button>
+            <button className="secondary" onClick={() => setStep(16)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={() => setStep(10)}>Next</button>
+            <button className="primary" onClick={() => setStep(17)}>Next</button>
           </div>
         </div>
       )}
-      {/* 9. Favorite province (map) and one word why */}
-      {step === 9 && (
+  {/* Favorite province (map) and one word why */}
+  {step === 16 && (
         <div className="screen glass-landing">
           <h3>Favorite province aside from hometown</h3>
           <PHProvinceMap
@@ -333,14 +574,14 @@ const committees = [
             inputProps={{ maxLength: 32 }}
           />
           <div className="nav-row" style={{ display: 'flex', gap: 24 }}>
-            <button className="secondary" onClick={() => setStep(8)}>Back</button>
+            <button className="secondary" onClick={() => setStep(13)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={async () => { await partialSubmit('favoriteProvince'); setStep(109); }} disabled={!form.favoriteProvince || !form.favoriteProvinceReason.trim()}>Next</button>
+            <button className="primary" onClick={async () => { await partialSubmit('favoriteProvince'); setStep(15); }} disabled={!form.favoriteProvince || !form.favoriteProvinceReason.trim()}>Next</button>
           </div>
         </div>
       )}
-      {/* 10. Review & Submit */}
-      {step === 10 && (
+  {/* Review & Submit */}
+  {step === 17 && (
         <div className="screen glass-landing">
           <h3>Review & Submit</h3>
           <div className="review-box" style={{ textAlign: 'left', fontFamily: 'Poppins, sans-serif', background: 'rgba(245,247,255,0.95)', color: '#222', borderRadius: 12, padding: 20, marginBottom: 16, boxShadow: '0 2px 12px rgba(80,80,160,0.07)' }}>
@@ -356,15 +597,15 @@ const committees = [
             <span style={{ fontWeight: 500 }}>Reason:</span> {form.favoriteProvinceReason || <i>None</i>}</p>
           </div>
           <div className="nav-row" style={{ display: 'flex', gap: 24 }}>
-            <button className="secondary" onClick={() => setStep(9)}>Back</button>
+            <button className="secondary" onClick={() => setStep(16)}>Back</button>
             <span style={{ flex: 1 }} />
-            <button className="primary" onClick={async () => { await handleSubmit(); setStep(11); }}>Submit</button>
+            <button className="primary" onClick={async () => { await handleSubmit(); setStep(18); }}>Submit</button>
           </div>
           {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
         </div>
       )}
-      {/* 11. Thank you/confirmation */}
-      {step === 11 && (
+  {/* Thank you/confirmation */}
+  {step === 18 && (
         <div className="screen glass-landing">
           <h3>Thank you for submitting!</h3>
           <p>Your response has been recorded.</p>
@@ -374,8 +615,8 @@ const committees = [
           {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
         </div>
       )}
-      {/* 99. Visualizations/summary only */}
-      {step === 99 && (
+  {/* Visualizations/summary only */}
+  {step === 99 && (
         <div>
           <div className="screen glass-landing" style={{ width: '100%', maxWidth: 900, margin: '0 auto', padding: 32 }}>
             <h3>Summary & Visualizations</h3>
@@ -457,8 +698,12 @@ const committees = [
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: 24 }}>
-            <button className="secondary" onClick={() => setStep(10)} style={{ minWidth: 120 }}>Back</button>
+            <button className="secondary" onClick={() => setStep(17)} style={{ minWidth: 120 }}>Back</button>
           </div>
         </div>
+      )}
+      </>
+    );
+}
 
 export default App;
