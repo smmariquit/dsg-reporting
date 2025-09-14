@@ -16,7 +16,7 @@ export function WordCloudViz({ words, fontFamily = 'Poppins, sans-serif', classN
   return (
     <div className={className} style={{ 
       width: '100%', 
-      height: 180, 
+      height: 250, 
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
@@ -91,8 +91,8 @@ export function Histogram({ data, label }) {
     <div style={{ width: '100%', height: 300 }}>
       <ResponsiveContainer>
         <BarChart data={chartData}>
-          <XAxis dataKey="name" label={{ value: label, position: 'insideBottom', offset: -5 }} stroke="#fff" tick={{ fill: '#fff' }} />
-          <YAxis allowDecimals={false} stroke="#fff" tick={{ fill: '#fff' }} />
+          <XAxis dataKey="name" label={{ value: label, position: 'insideBottom', offset: -5 }} stroke="#333" tick={{ fill: '#333' }} />
+          <YAxis allowDecimals={false} stroke="#333" tick={{ fill: '#333' }} />
           <Tooltip />
           <Bar dataKey="count" fill="#8884d8" />
         </BarChart>

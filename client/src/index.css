@@ -8,7 +8,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   background: url('../public/bg-image-front-page.png') no-repeat center center fixed;
   background-size: cover;
   color: #1a1a1a;
@@ -30,6 +32,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.5px;
   color: hsl(276, 100%, 63%);
   margin-bottom: 0.5em;
+  text-shadow: 0 0 10px hsl(276, 69%, 13%);
 }
 
 p {
@@ -50,9 +53,18 @@ p {
   padding: 40px 32px;
   margin: 40px auto;
   max-width: 720px;
+  width: calc(100% - 80px);
   transition: box-shadow 0.2s;
   max-height: 90vh;
   overflow-y: auto;
+  box-sizing: border-box;
+  /* Hide scroll bars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.glass-landing::-webkit-scrollbar {
+  display: none; /* WebKit browsers (Chrome, Safari, Edge) */
 }
 
 .glass-landing:hover {
@@ -96,4 +108,112 @@ button.secondary:hover {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Global overflow prevention */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent all containers from overflowing */
+.screen, .glass-landing, div[class*="container"] {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Ensure flex containers wrap properly */
+div[style*="display: flex"] {
+  flex-wrap: wrap;
+}
+
+/* Responsive containers */
+.container {
+  width: 100%;
+  max-width: 100vw;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive text inputs */
+input, textarea, select {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Material-UI TextField responsive */
+.MuiTextField-root {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.MuiInputBase-root {
+  max-width: 100% !important;
+}
+
+/* Small screen adjustments */
+@media (max-width: 768px) {
+  .glass-landing {
+    padding: 24px 16px;
+    margin: 20px auto;
+    width: calc(100% - 40px);
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.5rem;
+  }
+  
+  .heading {
+    font-size: 2rem;
+  }
+  
+  /* Make flex containers stack on small screens */
+  div[style*="display: flex"][style*="flexDirection: row"] {
+    flex-direction: column !important;
+  }
+  
+  /* Reduce button spacing */
+  .nav-row {
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-landing {
+    padding: 20px 12px;
+    margin: 10px auto;
+    width: calc(100% - 24px);
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.25rem;
+  }
+  
+  .heading {
+    font-size: 1.5rem;
+  }
+  
+  button.primary, button.secondary {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+  
+  /* Stack rating buttons vertically on very small screens */
+  div[style*="display: flex"][style*="gap: 8"] {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
 }
