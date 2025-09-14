@@ -410,7 +410,6 @@ function App() {
             alignItems: 'center', 
             margin: '24px 0',
             maxWidth: 600,
-            margin: '24px auto'
           }}>
             {skillsList.map(skill => (
               <button
