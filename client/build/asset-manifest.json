@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7c0a0848.css",
+    "main.js": "/static/js/main.11ffaa63.js",
+    "static/js/488.5f19b596.chunk.js": "/static/js/488.5f19b596.chunk.js",
+    "static/media/stimmie.png": "/static/media/stimmie.685c74b38cb845e7cd0c.png",
+    "static/media/bg-image-front-page.png": "/static/media/bg-image-front-page.df2e9b5db37cb49d9b3b.png",
+    "service-worker.js": "/service-worker.js",
+    "index.html": "/index.html",
+    "main.7c0a0848.css.map": "/static/css/main.7c0a0848.css.map",
+    "main.11ffaa63.js.map": "/static/js/main.11ffaa63.js.map",
+    "488.5f19b596.chunk.js.map": "/static/js/488.5f19b596.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7c0a0848.css",
+    "static/js/main.11ffaa63.js"
+  ]
+}
