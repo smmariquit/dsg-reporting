@@ -18,6 +18,7 @@ const committees = [
   'Secretariat and Logistics',
   'External Affairs',
   'Training and Skills',
+  'Membership and Internal Affairs'
 ];
 
 function App() {
