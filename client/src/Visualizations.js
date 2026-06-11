@@ -1,3 +1,5 @@
+// client/src/Visualizations.js
+
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 

@@ -1,3 +1,5 @@
+// client/src/offlineUtils.js
+
 // Utility to save JSON data as a file for offline fallback
 export function saveDataToFile(data, filename = 'dsg-interview.json') {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

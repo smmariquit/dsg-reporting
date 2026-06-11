@@ -1,3 +1,5 @@
+// client/src/App.js
+
 // All imports at the top
 import React, { useState, useEffect } from 'react';
 import './App.css';
