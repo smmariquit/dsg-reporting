@@ -1477,6 +1477,11 @@ function App() {
           </div>
         </div>
       )}
+      <footer style={{ textAlign: 'center', padding: '24px 16px 32px', fontSize: 13, color: '#888' }}>
+        <a href={`${process.env.PUBLIC_URL || ''}/privacy.html`} style={{ color: '#888' }}>Privacy</a>
+        {' · '}
+        <a href={`${process.env.PUBLIC_URL || ''}/terms.html`} style={{ color: '#888' }}>Terms</a>
+      </footer>
       </>
     );
 }
